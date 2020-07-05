@@ -1,0 +1,418 @@
+
+#	Two methods could be applied to calculate the elapsed time.
+#	The following example (from R documentations), compare the accuracy between
+#	them:
+testit <- function(x) {
+	p1 <- proc.time()
+	Sys.sleep(x)
+	proc.time() - p1	#the cpu usage should be negligible
+}
+
+#	according to the R documentations,
+#	it will loads a number of packages and in consequence consumes a great deal
+#	of memory:
+#	! /path/to/Rscript --vanilla --default-packages=NULL
+#	default for <Rscript> omits <methods>, as it takes about 60% of the startup
+#	time.
+
+#	R (simillar to other programming languages), provides a variaty of different
+#	data-structure to hold and sort out data:
+#	using ls() to list the populated working-list(WS). rm() to clear the WS:
+d1 = data.frame(name = c(1:4), age = 2)
+d1
+ls.str(pat = "d1")
+print(ls.str(), max.level = 4)
+v1 = 0
+v2 = 1
+ls()
+rm(list=ls())
+ls()
+
+#	R does care about a pretty output:
+v1 = c(1:4)
+v2 = c(1, 0, 3.14, 1)
+table(v1, v2)
+print(table(v1, v2), zero.print = ".")
+#	another good-looking example -- matrix:
+x = c(1:6)
+dim(x) = c(2,3)
+colnames(x) = c("A", "B", "C")
+rownames(x) = letters[1:2]
+x
+
+testit(3.7)
+#	The following examples (from R documentations), explains the restrictions of
+#	data-structures in R:
+a = "2"
+class(a)
+a
+class(a) = "character"
+a
+as.integer(a)
+class(a)
+
+as.character(9e+998)	#inf
+# -- quote from R doc --
+#	Technically the compiler's setting of the ISO C constant ‘DBL_DIG’,
+#	which will be 15 on machines supporting IEC60559 arithmetic,
+#	according to the C99 standard.
+# -- end of quote --
+options()$ts.eps
+#	The same number (15 or 16), that we discussed in 'octave' section.
+
+# -- quote from R doc --
+#	<as.character> breaks lines in language objects at 500 characters,
+#	and inserts newlines.  Prior to 2.15.0 lines were truncated.
+# -- end of quote --
+
+a0 = 11/999					#011 repeats itself
+print(a0, digits = 17)		#max precision = 17 -- deponds on machine
+(a1 <- as.character(a0))	#max = 15
+format(a0, digits = 16)		#shows one more digit -- max = 17
+a2 <- as.numeric(a1)
+a2
+a0
+a2 - a0						#normally around -1e-17
+as.character(a2)			#normally different from a1
+print(a0, digits = 16)
+print(a2, digits = 16)
+
+#	Nevertheless we brought here, the same example that we have been using for
+#	the other languages, to demonstrate the restrictions of data-structures:
+(1 + 0.1) - 1
+# [1] 0.1
+(1 + 1.e-40) - 1
+# [1] 0
+
+
+#	Yet another example to demonstrate the downside of using R to handle data.
+#	This time, using of hash-table as a data-structure to store and sorting out
+#	data, leads to "exceed-memory" error.
+x = c(1, 1, 0, 3, 3, 3, 4, 5, -1, -1, 1)
+x
+duplicated(x)
+duplicated(x, incomparables = c(3))
+duplicated(x, fromLast = T)
+duplicated(x, nmax = length(x) - 6)	#7 -- error
+duplicated(x, MARGIN = 1)	#row
+duplicated(x, MARGIN = 2)	#col
+anyDuplicated(x)
+x <- c(9:20, 1:5, 3:7, 0:8)
+unique(x)
+duplicated(iris)[140:143]
+duplicated(iris3, MARGIN = c(1, 3))
+anyDuplicated(iris)
+
+#another example --
+# -- quote from R example --
+x <- 1.0
+y <- 0.99999999999
+all.equal(x,y)
+# -- end of quote --
+
+#
+round(c(3.1415, 2.17), c(3,2))
+print(c(3.1415, 2.17), digits = 2)
+#rounding off a 5, the IEC 60559 standard -- machine depondent
+round(0.5)		#0
+round(-1.5)		#-2
+round(0.15, 1)	#0.1 OR 0.2
+x = 8
+floor(log(x, base = 8))	#<1>?
+ 						#it is normally necessary to use a tolerance
+#
+
+
+
+# ###matrices are restricted to less than 2^31 rows and columns,
+# ###even on 64-bit systems.
+
+options(warn = -1)
+m1 = matrix(1:6, 2, 4)
+options(warn = 1)
+m1 = matrix(1:6, 2, 4)
+getOption("warn")
+
+
+
+
+factor(
+x,
+levels = c(min(x):max(x)),
+exclude = 7,
+nmax = 4,	#hash-table
+ordered = T,
+labels = c(1,2,3,4,5,6,7,8,9,10,11,12),
+)
+sort(unique(x))
+ 
+gc(T)
+c_cell = round((1.6 / 9.4) * 100)
+cat(c_cell, '%', '\n')
+v_cell = round((1.3 / 38.4) * 100)
+cat(v_cell, '%', '\n')
+gc(reset = T)
+
+gc.time()
+gc()
+gc.time()
+
+# user CPU time
+# system CPU time
+# elapsed time
+# children's user
+# system's user
+
+
+
+#      ‘as.character’ represents real and complex numbers to 15
+#      significant digits (technically the compiler's setting of the ISO
+#      C constant ‘DBL_DIG’, which will be 15 on machines supporting
+#      IEC60559 arithmetic according to the C99 standard).  This ensures
+#      that all the digits in the result will be reliable (and not the
+#      result of representation error), but does mean that conversion to
+#      character and back to numeric may change the number.  If you want
+#      to convert numbers to character with the maximum possible
+#      precision, use ‘format’.
+
+#	significant TRY
+x = '1'
+try(x + 1)
+class(x)
+class(x) <- 'numeric'
+class(x)
+x + 1
+
+
+>  v1 = c(1:4)
+>  v2 = c(1, 0, 3.14, 1)
+>  table(v1, v2)
+   v2
+v1  0 1 3.14
+  1 0 1    0
+  2 1 0    0
+  3 0 0    1
+  4 0 1    0
+>  print(table(v1, v2), zero.print = ".")
+   v2
+v1  0 1 3.14
+  1 . 1    .
+  2 1 .    .
+  3 . .    1
+  4 . 1    .
+> 
+
+Error in table(v1, v2) : attempt to make a table with >= 2^31 elements
+> v1=c(1:100000)
+> v2=c(1:100000)
+> table(v1,v2)
+Error in table(v1, v2) : attempt to make a table with >= 2^31 elements
+> v2=c(1:10000)
+> v1=c(1:10000)
+> table(v1,v2)
+Error: cannot allocate vector of size 381.5 Mb
+
+
+ cat("foo", "\n")
+ Sys.sleep(3)
+ cat("bar", "\n")
+ testit <- function(x) {
+ 	p1 <- proc.time()
+ 	Sys.sleep(x)
+ 	proc.time() - p1	the cpu usage should be negligible
+ }
+ testit(3.7)
+ a = "2"
+ a
+ as.integer(a)
+
+ as.character(9e+998)	inf
+ technically the compiler's setting of the ISO C constant ‘DBL_DIG’,
+ which will be 15 on machines supporting IEC60559 arithmetic,
+ according to the C99 standard.
+ format()
+ <as.character> breaks lines in language objects at 500 characters,
+ and inserts newlines.  Prior to 2.15.0 lines were truncated.
+ a0 = 11/999				011 repeats itself
+ print(a0, digits = 17)	max precision = 17 -- deponds on machin
+ (a1 <- as.character(a0))	max = 15
+ format(a0, digits = 16)	 shows one more digit -- max = 17
+ a2 <- as.numeric(a1)
+ a2
+ a0
+ a2 - a0					normally around -1e-17
+ as.character(a2)			normally different from a1
+ print(a0, digits = 16)
+ print(a2, digits = 16)
+ x = 10
+ x
+ class(x)
+ class(x) = "character"
+
+
+ cat(x[4], "\n")
+ cat(x[4], "\n", file = "data.dat")
+
+ x = c(1, 1, 0, 3, 3, 3, 4, 5, -1, -1, 1)
+ x
+ duplicated(x)
+ duplicated(x, incomparables = c(3))
+ duplicated(x, fromLast = T)
+ duplicated(x, nmax = length(x) - 6)	7 -- error
+ duplicated(x, MARGIN = 1)	row
+ duplicated(x, MARGIN = 2)	col
+ anyDuplicated(x)
+ x <- c(9:20, 1:5, 3:7, 0:8)
+ unique(x)
+ duplicated(iris)[140:143]
+ duplicated(iris3, MARGIN = c(1, 3))
+ anyDuplicated(iris)
+
+
+
+ x <- 1.0
+ y <- 0.99999999999
+
+ all.equal(x,y)
+
+ typeof(2)
+ class(2)
+ x = 3.14
+ x
+ as.integer(x)
+ is.wholenumber = function(x, tol = .Machine$double.eps^0.5) {
+ 	abs(x - round(x)) < tol
+ }
+ is.wholenumber(1)
+ (x <- seq(1, 5, by = 0.5))
+ is.wholenumber(x)
+ mode("foo")
+
+
+
+ a = 1				01
+ bitwShiftL(a, 1)	10
+ a = 2				10
+ bitwShiftR(a, 1)	01
+ bitwShiftL/R(a,n) --
+ a = has 32 bit -- unsigned
+ n = up to 31
+ package <bitOps> treats integers 2^31 or larger.
+ decimal to binary --
+ as.integer(intToBits(4))
+ bitwAnd(15L, 7L)
+ as.integer(intToBits(15L))
+ as.integer(intToBits(7L))
+ bitwOr(15L, 7L)
+ bitwXor(15L, 7L)
+ bitwXor(-1L, 1L)
+ bitwShiftR(-1, 1:31)  shifts of 2^32-1 = 4294967295
+
+
+
+
+ options(warn = -1)
+ m1 = matrix(1:6, 2, 4)
+ options(warn = 1)
+ m1 = matrix(1:6, 2, 4)
+ getOption("warn")
+ v1 = c(12, NaN, -4, 23, 0, 23, -4)
+
+
+ 
+ bitwNot(1)
+ bitwAnd(15L, 7L)	L means 32-bit <integer>
+ bitwOr(15L, 7L)
+ bitwXor(15L, 7L)
+ bitwXor(-1L, 1L)
+ bitwShiftR(-1, 1:31)	shifts of 2^32-1 = 4294967295
+ bitwShiftL(-1, 1:31)	<-1> = unsigned integer
+ 						up to 31
+ package <bitOps> has similar functions for numeric vectors,
+ which differ in the way they treat integers 2 ^ 31 or larger.
+
+ factor(
+ x,
+ levels = c(min(x):max(x)),
+ exclude = 7,
+ nmax = 4,	hash-table
+ ordered = T,
+ labels = c(1,2,3,4,5,6,7,8,9,10,11,12),
+ )
+ sort(unique(x))
+ 
+ gc(T)
+ c_cell = round((1.6 / 9.4) * 100)
+ cat(c_cell, '%', '\n')
+ v_cell = round((1.3 / 38.4) * 100)
+ cat(v_cell, '%', '\n')
+ gc(reset = T)
+ 
+ gc.time()
+ gc()
+ gc.time()
+ user CPU time
+ system CPU time
+ elapsed time
+ children's user
+ system's user
+
+
+ 
+ matrices are restricted to less than 2^31 rows and columns,
+ even on 64-bit systems.
+ 
+ v1 = c('food', 'foobar', 'football')
+ char.expand('foob', v1, cat('no match!', '\n'))
+ char.expand('fool', v1, cat('no match!', '\n'))
+ 
+ intToBits(4)
+ v1 = as.raw(10)
+ packBits(v1, type = c("raw", "integer"))
+
+
+
+ 
+ v1 = 'a'
+ v2 = 'A'
+ charToRaw(v1)
+ charToRaw(v2)
+ v1 = as.raw(64)
+ rawToChar(v1)
+ rawToBits(v1)
+ intToBits(64)
+ rawShift(v1, 1)
+ showBits <- function(r) stats::symnum(as.logical(rawToBits(r)))
+ showBits(v1)
+ showBits(rawShift(v1, 1))
+ showBits(rawShift(v1, 2))
+ showBits(v1)
+ showBits(rawShift(v1, -1))
+ showBits(rawShift(v1, -2))
+ showBits(rawShift(v1, -3))
+ 
+ character(length = 2)
+ as.character(21)
+ class(x)
+ 
+      ‘as.character’ represents real and complex numbers to 15
+      significant digits (technically the compiler's setting of the ISO
+      C constant ‘DBL_DIG’, which will be 15 on machines supporting
+      IEC60559 arithmetic according to the C99 standard).  This ensures
+      that all the digits in the result will be reliable (and not the
+      result of representation error), but does mean that conversion to
+      character and back to numeric may change the number.  If you want
+      to convert numbers to character with the maximum possible
+      precision, use ‘format’.
+
+      ‘as.character’ breaks lines in language objects at 500 characters,
+      and inserts newlines.  Prior to 2.15.0 lines were truncated.
+
+ a0 <- 11/999				has a repeating decimal representation
+ (a1 <- as.character(a0))
+ format(a0, digits = 16)	shows one more digit
+ a2 <- as.numeric(a1)
+ a2 - a0					normally around -1e-17
+ as.character(a2)			normally different from a1
+ print(c(a0, a2), digits = 16)
+

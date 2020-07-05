@@ -1,0 +1,10 @@
+#!/bin/bash
+git config user.name "vspades"
+git config user.email "vegaspades@gmail.com"
+git config push.default "simple"
+#
+git pull
+#
+git add *
+git commit -m "cmt"
+git push
