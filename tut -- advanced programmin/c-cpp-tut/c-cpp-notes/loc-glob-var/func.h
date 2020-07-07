@@ -2,9 +2,9 @@
 
 using namespace std;
 
-int v = 0;
+int v1 = 0;
 
 void f() {
-	int v = 1;
-	cout << v << endl;
+	int v1 = 1;
+	cout << "local variable:\t\t" << v1 << endl;
 }
