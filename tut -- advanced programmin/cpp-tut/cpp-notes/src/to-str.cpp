@@ -1,9 +1,8 @@
 #include <iostream>
 #include <string>
-#include <stdlib.h>
 
 using namespace std;
 
 int main() {
-	cout << "foo" + to_string(rand()) << endl;
+	cout << "foo_" + to_string(2.4) << endl;
 }
