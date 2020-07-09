@@ -1,0 +1,209 @@
+<pre>
+numpy -- quick-start
+
+abstraction --
+while there are a couple of tutorials out there, including
+scipy-numpy-user-guide [1], this article tries to provide a gentler introduction
+on the most essential methods of this module.
+
+introduction --
+first, In section[sec-1], we emphasize the advantage of using a numpy-array over a
+python-list. then, in section[], we'll consider the disadvantages of a
+numpy-array, regarding the "pythonic-style" and "homogeneity" points of view.
+last but not the least, in section[], we'll wrap up some common and basic
+methods of numpy module, just to help getting start.
+
+sec-1. how could a numpy array reduce the execution-time?
+
+an array holds homogeneous data, that is all elements are the same type
+(and so the same size in bytes). for example, all of them are 2-bytes integers.
+therfore to search for an element, all we need to know are:
+	1. basic-address: the address of the array, which is the address of the first
+	element.
+	2. size: the size of each element in bytes.
+we then use this formula to locate a desired element:
+	[formula]
+in this case, for example, finding the 2nd element (with the index 3), would be
+as fast as finding the 10053th element (with the index of 10054). This is to be
+called as Random (Direct) Access.
+
+on the other hand, each member in the python-list, got its own node, including:
+	1. Node-Address: The address of this node
+	2. Payload: Data, could be of different sizes
+	3. Next-Node: The address of the next node
+althogh, a python-list could hold the data of different types, to find a member
+of the list we need to start from the begging of the sequence, traverse all
+them nodes, requesting each node the address of the next one, all up to the
+target node. It would be like finding a track in a cassette tape. we cannot just
+jump to the record like Random Access.
+
+the following example demonstrates the difference in run-time, between two
+snippets[][]. The enlisting[1] uses the numpy-array to hold data, while the
+other keeps track of them in a python-list.
+
+[enlist-1]
+[enlist-2]
+
+ex-1. comparing the execution-time of the enlist-1 and the enlist-2, using 'time'
+command.
+comparing [fig-1] and [fig-2] tells using a numpy-array instead of a python-list
+could actually decrease the exe-time.
+
+[fig-1]
+[fig-2]
+
+2. vectorisazion --
+to make that process even faster, using numpy-array is not enough. we need to
+eliminate them for-loops from our codes. this is known as vectorization or in
+python term; pythonic-style. the following example substitude the for-loop in
+[enlist-2] with a one-line operation [enlist-3]. 
+
+[enlist-3]
+
+let's see the result [fig-3]:
+
+that's quite a significant diffrence comparing to enlist-1 [fig-1]. also proves
+that for-loops in python are not the ones in C/C++ or Java []. To spped-up the
+procedures, it'd be better to vectorise them python codes. let's see another example
+
+ex2. compare run-time for code-1 and code-2. the former in Python, while the
+latter in C.
+
+[code-1]
+[code-2]
+
+
+Install Numpy Module:
+
+since all the nessary requirenments have been met during the install 
+procedure, installing python module will be a very easy task. all you 
+have to do while inside IPython, type:
+
+from os import system as s
+
+now to install a module, here for example, Numpy module:
+
+s('pip install numpy')
+
+after you get a 0, that is, it got the job done with no error, you can 
+now import Numpy module and use its functions:
+
+import numpy as np
+
+now you are we are ready for the rest of this tutorial.
+
+we start generating an instance of a list:
+
+In []: v = [2, 6, 5, 9]
+
+to verfiy its type, we would put:
+
+In []: type(v)
+
+Out[]: list
+
+as we already discussed the advantage of using array instead of list, to 
+convert a list to array:
+
+In []: v = np.array(v)
+
+now if we check with its type again, we would have:
+
+In []: type(v) 
+
+Out[]: numpy.ndarray
+
+probably no specific reason to convert an array to a list, after all 
+them benefits, however for the matter of completeness:
+
+In[]: v = list(v)
+
+In python when you assign a value to a variable name, that name would be 
+a new pointer to that value, indtead of a new copy. in this way, python 
+would consume the memory in more efficient way. afterall, if we want to 
+have another copy of the data on the memory, let's say for trying any 
+function on that without manipulating the original one, we need to 
+specifically announce that via this command:
+
+In []: v = [1,2,3]
+
+In []: v = np.array(v)
+
+In [17]: v1 = np.array(v)
+
+In [18]: v2 = v1
+
+In [19]: v3 = v1.copy()
+
+in the above enlisting we have the v2 to point to the v1, but have the 
+v3 to contain a copy of that the v1 value. to verify our teory we would 
+alter an element in each of them v2 and v3, and check with the value v1, 
+to disguinish the original from the copy one.
+
+In[]: v1
+
+Out[]: array([5, 2, 3])
+
+In[]: v3
+
+Out[]: array([4, 2, 3])
+
+speaking of manipulating them arrays, in the following we will descuss 
+the methods of altering and also traversing through the values:
+
+In[]: v = [1, 2, 3, 4, 4, 4, 2, 1]v = np.array(v) v[:3] v[3] v[3] = 5 v
+
+hopefully some of them popular functions already have been made and 
+ready to use. one could apply a method, related to statistic and etc, to 
+an array like this:
+
+In []: v = [1, 2, 3, 4, 4, 4, 2, 1]
+
+In []: v = np.array(v)
+
+In []: np.unique(v) Out[]: array([1, 2, 3, 4])
+
+In []: np.sort(v) Out[]: array([1, 1, 2, 2, 3, 4, 4, 4])
+
+in addition to find out the type of each elements in the array: In [32]: 
+v.dtype Out[32]: dtype('int64')
+
+also to convert them elemnts to other type: In [34]: v.astype('float64') 
+Out[34]: array([1., 2., 3., 4., 4., 4., 2., 1.])
+
+one could find out and reform the dimension of an array and so turn it 
+into a matrix(2-dim array), or any number of other dimension (n-dim):
+
+In [35]: v.shape Out[35]: (8,)
+
+In [36]: v.shape = [2,4]
+
+In [37]: v Out[37]: array([[1, 2, 3, 4],
+       [4, 4, 2, 1]])
+
+In [38]: v = v.flatten()
+
+In [39]: v Out[39]: array([1, 2, 3, 4, 4, 4, 2, 1])
+
+In [40]: v.shape = [4,2]
+
+In [41]: v Out[41]: array([[1, 2],
+       [3, 4],
+       [4, 4],
+       [2, 1]])
+
+print 2 in v print 10 in v
+
+In [5]: v = [1,2,3,4]
+
+In [6]: v = np.array(v)
+
+In [7]: v Out[7]: array([1, 2, 3, 4])
+
+In [8]: v + v Out[8]: array([2, 4, 6, 8])
+
+In [9]: v[v>2] Out[9]: array([3, 4])
+
+
+https://www.artima.com/weblogs/viewpost.jsp?thread=98196 
+https://www.artima.com/weblogs/viewpost.jsp?thread=98196

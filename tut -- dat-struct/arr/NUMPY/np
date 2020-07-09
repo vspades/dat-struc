@@ -1,0 +1,485 @@
+>>> import numpy as np
+>>> a = np.arange(15).reshape(3, 5)
+>>> a
+array([[ 0,  1,  2,  3,  4],
+       [ 5,  6,  7,  8,  9],
+       [10, 11, 12, 13, 14]])
+>>> a.shape
+(3, 5)
+>>> a.ndim
+2
+>>> a.dtype.name
+'int64'
+>>> a.itemsize
+8
+>>> a.size
+15
+>>> type(a)
+<type 'numpy.ndarray'>
+>>> b = np.array([6, 7, 8])
+>>> b
+array([6, 7, 8])
+>>> type(b)
+<type 'numpy.ndarray'>
+
+In [42]: v =[1,2,3,4]
+
+In [43]: v=np.array(v, dtype='float64')
+
+In [75]: v
+Out[75]: 
+array([[0., 0., 0.],
+       [0., 0., 0.]])
+
+In [76]: v.flatten()
+Out[76]: array([0., 0., 0., 0., 0., 0.])
+
+In [77]:
+
+
+Indexing, Slicing and Iterating
+
+One-dimensional arrays can be indexed, sliced and iterated over, much like lists and other Python sequences.
+>>>
+
+>>> a = np.arange(10)**3
+>>> a
+array([  0,   1,   8,  27,  64, 125, 216, 343, 512, 729])
+>>> a[2]
+8
+>>> a[2:5]
+array([ 8, 27, 64])
+>>> a[:6:2] = -1000    # equivalent to a[0:6:2] = -1000; from start to position 6, exclusive, set every 2nd element to -1000
+>>> a
+array([-1000,     1, -1000,    27, -1000,   125,   216,   343,   512,   729])
+>>> a[ : :-1]                                 # reversed a
+array([  729,   512,   343,   216,   125, -1000,    27, -1000,     1, -1000])
+>>> for i in a:
+...     print(i**(1/3.))
+...
+nan
+1.0
+nan
+3.0
+nan
+5.0
+6.0
+7.0
+8.0
+9.0
+
+Multidimensional arrays can have one index per axis. These indices are given in a tuple separated by commas:
+>>>
+
+>>> def f(x,y):
+...     return 10*x+y
+...
+>>> b = np.fromfunction(f,(5,4),dtype=int)
+>>> b
+array([[ 0,  1,  2,  3],
+       [10, 11, 12, 13],
+       [20, 21, 22, 23],
+       [30, 31, 32, 33],
+       [40, 41, 42, 43]])
+>>> b[2,3]
+23
+>>> b[0:5, 1]                       # each row in the second column of b
+array([ 1, 11, 21, 31, 41])
+>>> b[ : ,1]                        # equivalent to the previous example
+array([ 1, 11, 21, 31, 41])
+>>> b[1:3, : ]                      # each column in the second and third row of b
+array([[10, 11, 12, 13],
+       [20, 21, 22, 23]])
+
+When fewer indices are provided than the number of axes, the missing indices are considered complete slices:
+>>>
+
+>>> b[-1]                                  # the last row. Equivalent to b[-1,:]
+array([40, 41, 42, 43])
+
+The expression within brackets in b[i] is treated as an i followed by as many instances of : as needed to represent the remaining axes. NumPy also allows you to write this using dots as b[i,...].
+
+The dots (...) represent as many colons as needed to produce a complete indexing tuple. For example, if x is an array with 5 axes, then
+
+    x[1,2,...] is equivalent to x[1,2,:,:,:],
+    x[...,3] to x[:,:,:,:,3] and
+    x[4,...,5,:] to x[4,:,:,5,:].
+
+>>>
+
+>>> c = np.array( [[[  0,  1,  2],               # a 3D array (two stacked 2D arrays)
+...                 [ 10, 12, 13]],
+...                [[100,101,102],
+...                 [110,112,113]]])
+>>> c.shape
+(2, 2, 3)
+>>> c[1,...]                                   # same as c[1,:,:] or c[1]
+array([[100, 101, 102],
+       [110, 112, 113]])
+>>> c[...,2]                                   # same as c[:,:,2]
+array([[  2,  13],
+       [102, 113]])
+
+Iterating over multidimensional arrays is done with respect to the first axis:
+>>>
+
+>>> for row in b:
+...     print(row)
+...
+[0 1 2 3]
+[10 11 12 13]
+[20 21 22 23]
+[30 31 32 33]
+[40 41 42 43]
+
+However, if one wants to perform an operation on each element in the array, one can use the flat attribute which is an iterator over all the elements of the array:
+>>>
+
+>>> for element in b.flat:
+...     print(element)
+...
+0
+1
+2
+3
+10
+11
+12
+13
+20
+21
+22
+23
+30
+31
+32
+33
+40
+41
+42
+43
+
+See also
+
+Indexing, Indexing (reference), newaxis, ndenumerate, indices
+
+>>> a = np.array([2,3,4,5])
+>>> b = np.array([8,5,4])
+>>> c = np.array([5,4,6,8,3])
+>>> ax,bx,cx = np.ix_(a,b,c)
+>>> ax
+array([[[2]],
+       [[3]],
+       [[4]],
+       [[5]]])
+>>> bx
+array([[[8],
+        [5],
+        [4]]])
+>>> cx
+array([[[5, 4, 6, 8, 3]]])
+>>> ax.shape, bx.shape, cx.shape
+((4, 1, 1), (1, 3, 1), (1, 1, 5))
+>>> result = ax+bx*cx
+>>> result
+array([[[42, 34, 50, 66, 26],
+        [27, 22, 32, 42, 17],
+        [22, 18, 26, 34, 14]],
+       [[43, 35, 51, 67, 27],
+        [28, 23, 33, 43, 18],
+        [23, 19, 27, 35, 15]],
+       [[44, 36, 52, 68, 28],
+        [29, 24, 34, 44, 19],
+        [24, 20, 28, 36, 16]],
+       [[45, 37, 53, 69, 29],
+        [30, 25, 35, 45, 20],
+        [25, 21, 29, 37, 17]]])
+>>> result[3,2,4]
+17
+>>> a[3]+b[2]*c[4]
+17
+
+You could also implement the reduce as follows:
+>>>
+
+>>> def ufunc_reduce(ufct, *vectors):
+...    vs = np.ix_(*vectors)
+...    r = ufct.identity
+...    for v in vs:
+...        r = ufct(r,v)
+...    return r
+
+and then use it as:
+>>>
+
+>>> ufunc_reduce(np.add,a,b,c)
+array([[[15, 14, 16, 18, 13],
+        [12, 11, 13, 15, 10],
+        [11, 10, 12, 14,  9]],
+       [[16, 15, 17, 19, 14],
+        [13, 12, 14, 16, 11],
+        [12, 11, 13, 15, 10]],
+       [[17, 16, 18, 20, 15],
+        [14, 13, 15, 17, 12],
+        [13, 12, 14, 16, 11]],
+       [[18, 17, 19, 21, 16],
+        [15, 14, 16, 18, 13],
+        [14, 13, 15, 17, 12]]])
+
+
+
+
+
+
+
+
+
+
+
+
+v1 = [2, 6, 5, 9]
+print type(v1)
+v2 = np.array([2, 6, 5, 9])
+print type(v2)
+v2 = list(v2)
+print type(v2)
+
+v1 = np.array([1, 2, 3])
+v2 = v1.copy()
+v1[0] = 0
+print v1
+print v2
+
+v = np.array([1,2,3,4,4,4,2])
+print v[:3]
+print v[3]
+v[0] = 5
+print v
+print np.unique(v)
+print np.sort(v)
+
+print v.dtype
+v = v.astype('float64')
+
+print v.shape
+v.shape = [7,1]
+print v
+
+print 2 in v
+print 10 in v
+
+In [5]: v = [1,2,3,4]
+
+In [6]: v = np.array(v)
+
+In [7]: v
+Out[7]: array([1, 2, 3, 4])
+
+In [8]: v + v
+Out[8]: array([2, 4, 6, 8])
+
+In [9]: v[v>2]
+Out[9]: array([3, 4])
+
+import numpy as np
+
+v1 = [1, 2, 3, 4]
+v1 = np.array(v1)
+print v1
+#save on disk
+np.save('q', v1)
+#load from disk -- npy
+v2 = np.load('q.npy')
+print v2
+
+#from = 1, to = 10, step = 1
+v1 = np.arange(1, 8)
+print v1
+#step = 2
+v1 = np.arange(1, 8, 2)
+print v1
+#step = 1.5
+v1 = np.arange(1, 8, 1.5)
+print v1
+
+#from = 1, to = 4, split-by = 7
+v1 = np.linspace(1, 4, 7)
+print v1
+
+#slice
+v1 = np.arange(1, 8)
+#from = 2, to = 5
+print v1[2:5]
+
+#index -- starts from 0
+print v1[[2, 5]]
+
+#number of elements
+print np.size(v1)
+
+v1 = np.arange(1, 9)
+print v1
+#dimension
+print v1.shape
+v1.shape = (2,4)
+print v1
+#4th column
+print v1[:,3]
+
+
+#append
+v1 = np.array([1, 2, 3])
+v2 = np.array([4, 5, 6])
+print np.hstack((v1, v2))
+print np.hstack(([34], v1, [55, 66], v2, [-101]))
+print np.vstack((v1, v2))
+print np.vstack((v1, [9, 8, 7], v2))
+
+#repetition
+v1 = [1, 2, 3, 4]
+v1 = v1 * 4
+v1 = np.array(v1)
+print v1
+
+#operation
+v1 = np.array([1, 2, 3])
+print v1 * 2
+print v1 ** 2
+print v1 / 2
+print v1 / 2.
+(END)
+
+import numpy as np
+import pandas as pd
+
+v = [1,2,3,4]
+v = np.array(v)
+v = pd.Series(v)
+v.to_csv('stk.csv')
+v = read_csv('stk.csv')
+
+len(v.index)
+len(v.columns)
+v.values
+
+v[1]		#column 1
+v[[1,20]]	#column 1,20
+
+v[1][:4]	#first 4 row(s) of 1st column
+
+v[(v[1] > 0) & (v[1558] =='ad.')][[1,2,3,1558]].head(4)
+
+In [95]: v = range(10000000)
+
+In [96]: v = np.array(v)
+
+In [97]: v
+Out[97]: array([      0,       1,       2, ..., 9999997, 9999998, 9999999])
+
+In [98]: v[:] = [random() * 10 for i in range(10000000)]
+
+v['last_col'] = 0
+v.columns
+
+v=v.drop('last_col', 1)
+v.columns
+
+l = list(v[1558].drop_duplicates())
+
+w = v[1558] == 'ad.'
+list(w)
+v.loc[w, 1558] = 1	#use loc otherwise itll apply on a copy of the df
+
+v = [1,2,np.nan,4]
+
+In [29]: v.dtypes
+Out[29]: 
+sid         int64
+name       object
+course     object
+grade     float64
+dtype: object
+
+In [30]:
+
+v.<TAB>
+
+In [37]: v[:][-2:]	#tail
+Out[37]: 
+       sid   name course  grade
+2  9225110    ali   math  17.00
+3  9525101  matin     cs  11.25
+
+In [38]: v[:][:2]	#head
+Out[38]: 
+       sid  name course  grade
+0  9325110   ali    art   13.4
+1  9325111  sara   math   13.4
+
+
+v.to_csv('q.csv')	#fast
+
+v.to_numpy()
+np.save('q', v)		#much faster
+
+v5 = np.load('q3.npy', allow_pickle=True)
+
+v = [1,2,np.nan,4]
+v=pd.DataFrame(v)
+v.dropna(how='any')
+v.fillna(value=5)
+pd.isna(v)
+
+# EXAMPLE 1 -- why we do need C
+
+In [30]: dates = pd.date_range('20130101', periods=6)
+
+In [31]: df = pd.DataFrame(np.random.randn(6, 4), index=dates, columns=list('ABCD'))
+
+In [32]: df
+Out[32]: 
+                   A         B         C         D
+2013-01-01 -0.390801 -0.309425 -1.425691  1.011277
+2013-01-02 -1.185760  0.812220 -0.371523 -1.863821
+2013-01-03  2.201864 -0.813001 -0.211739 -0.974226
+2013-01-04 -0.627889 -1.114211 -1.272341  2.185242
+2013-01-05  1.438416 -1.896501 -0.003170  0.951270
+2013-01-06  0.463898 -0.099334  0.205833  0.983642
+
+In [33]: df.apply(lambda x: x.max() - x.min())
+Out[33]: 
+A    3.387624
+B    2.708721
+C    1.631524
+D    4.049063
+dtype: float64
+
+In [34]:
+
+====================================
+
+In [68]: s = pd.Series(np.random.randint(0, 7, size=10))
+
+In [69]: s
+Out[69]: 
+0    4
+1    2
+2    1
+3    2
+4    6
+5    4
+6    4
+7    6
+8    4
+9    4
+dtype: int64
+
+In [70]: s.value_counts()
+Out[70]: 
+4    5
+6    2
+2    2
+1    1
+dtype: int64
+
+

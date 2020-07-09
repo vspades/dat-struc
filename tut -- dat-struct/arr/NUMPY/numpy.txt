@@ -1,0 +1,207 @@
+Numpy is an extra module that could be added to python workspace, to
+help with speeding up the execution-time (exe-time) of code-snippets.
+In fact, it applies a method named "vectorization", to decrease the
+exe-time. It is believed that, "vectorization" approach concerns these
+two factors:
+	- eliminiting for-loop: using in-line command instead of wrapping
+	multi-lines under a for-loop structure.
+	- homogeneity array: picking <array> data-structure over <list> for
+	keeping the data.
+
+eliminiting for-loop:
+	Unlike conventional C-style coding, "Guido van Rossum", the designer
+	of Python programming language, encourages the programmers to use
+	in-line commands for applying a certain function on a vector of
+	data. He names it as "Pythonic" in his article, All Things Pythonic [https://www.artima.com/weblogs/viewpost.jsp?thread=98196].
+
+homogeneity array:
+	a <list> or a <linked-list> data-structure [illustration] , establishs a container for each element of the list that includes 3 parts:
+		- pre-ptr: pointer that holds the address of the previous element-box in the memory.
+		- data: a place to hold the actual raw data
+		- nxt-ptr: a pointer that holds the address of the next element-box in the memory.
+	needless to say, to traverse through them eleemnts, the compiler has to locate each begginign address of each elemnt that could be
+	located in anywhere in the memory. no matter the next ellemtnt is the same type or else.
+	on the other hand, the array has the homogeneity feature, that is all elements are the same type. in other word,
+	the compiler only need to hold the begging address of the first elemnt, which is the begginging address of the array,
+	and also need to know the size (length) of each eleemnt. since then, it could locate the other elemnts according to this formla:
+	[formula]
+	in this way, searching and traversing time will deacrease signifacntly.
+	
+the author brought this example to demonstrate a comprasion between using the list and array in python. the example is self-explained thanks to the comments whithin the
+code:
+
+#The main advantage of NumPy is the speed of the usual array operations compared
+#to standard Python operations. For instance, a traditional summation of 10000000
+#elements:
+
+def sum_trad():
+	start = time.time()
+	X = range(10000000)
+	Y = range(10000000)
+	Z = []
+	for i in range(len(X)):
+		Z.append(X[i] + Y[i])
+	return time.time() - start
+
+#Compare this to the Numpy function:
+
+def sum_numpy():
+	start = time.time()
+	X = np.arange(10000000)
+	Y = np.arange(10000000)
+	Z = X + Y
+	return time.time() - start
+
+print 'time sum:', sum_trad(),
+print 'time sum numpy:', sum_numpy()
+
+#time sun: 2.1142539978
+#time sum numpy: 0.0807049274445
+
+#The time used is 2.1142539978 and 0.0807049274445 respectively.
+
+the example implicity, mentioned the two factors of the vectorizationed that we discusse earlier.
+however, the author didnt explicity express the main role of ach facts in that example. therefore we extend the example to clarify the impact of each role in exe-time:
+
+[example]
+
+nevertheless, the author debated the fact number 1 in other example that we reapeat it here for a quicj discussion:
+
+[exzample]
+
+apparantly it doesnt seem to be reasonble or efficient to consider each possible instance with a question-mark in that. the data-analyzer
+forced to include all samples with different number of spaces just to foloow the rule of vectorization. it seems that an efficient code would be 
+somthing like this:
+
+[code]
+
+although it seems to be straight forward to comprehenf, but if one have this written in python programming, they unconseously 
+increase the exe-time. beacause of using of for-loop., even if they define them variables using <array>. therefore, it seems that the author 
+had no choice and had to go with rules of python vectorixations to make the code "pythonic".in the future work we will invastigate through a module named,
+cython, so we can pass the numpy arrays to C and so we can apply them functions on those arrays with C-style foor-loops. as a rsult, we can have the benefit of modules in python and also 
+the spped of C
+
+there are a variouse tutorials to understand how to work with numpy module. specially, the official resource provided
+by python here[referece].
+in the following section, we provided a quick tutorial that include the most esssential materials that one need s to know, concerning the concept, that we have debated in this paper.
+
+quick tutorial on NUmpy: 
+
+In [7]: from os import system as s
+
+In [8]: s('pip install numpy')
+
+
+we start generating an instance of a <list>, which described before as <linked-list> data-stracture.
+In []: v = [2, 6, 5, 9]
+
+to verfiy its type, we would put:
+In []: type(v)
+Out[]: list
+
+for the traverse-speed sake, it would be better to convert that list to array, or a numpy array, that we have explained its advantages before: 
+In []: v = np.array(v)
+
+now if we check with its type again, we would have:
+In []: type(v)
+Out[]: numpy.ndarray
+
+probably no specific reason to convert an array to a list, after all them benefits, however for the matter of completeness:
+In[]: v = list(v)
+
+in python when you assign a value to a variable name, that name would be a new pointer to that value, indtead of a new copy.
+in this way, python would consume the memory in more efficient way. afterall, if we want to have another copy of the data on the memory,
+let's say for trying any function on that without manipulating the original one, we need to specifically announce that via this command:
+
+In []: v = [1,2,3]
+
+In []: v = np.array(v)
+
+In [17]: v1 = np.array(v)
+
+In [18]: v2 = v1
+
+In [19]: v3 = v1.copy()
+
+in the above enlisting we have the v2 to point to the v1, but have the v3 to contain a copy of that the v1 value. to verify our teory we would 
+alter an element in each of them v2 and v3, and check with the value v1, to disguinish the original from the copy one.
+
+In []: v1
+Out[]: array([5, 2, 3])
+
+In []: v3
+Out[]: array([4, 2, 3]) 
+
+speaking of manipulating them arrays, in the following we will descuss the methods of altering and also traversing the values:
+
+v = [1, 2, 3, 4, 4, 4, 2, 1]
+v = np.array(v)
+v[:3]
+v[3]
+v[3] = 5
+v
+
+hopefully some of them popular functions already have been made and ready to use. one could apply a method, related to statistic and etc,
+to an array like this:
+
+In []: v = [1, 2, 3, 4, 4, 4, 2, 1]
+
+In []: v = np.array(v)
+
+In []: np.unique(v)
+Out[]: array([1, 2, 3, 4])
+
+In []: np.sort(v)
+Out[]: array([1, 1, 2, 2, 3, 4, 4, 4])
+
+in addition to find out the type of each elements in the array:
+In [32]: v.dtype
+Out[32]: dtype('int64')
+
+also to convert them elemnts to other type:
+In [34]: v.astype('float64')
+Out[34]: array([1., 2., 3., 4., 4., 4., 2., 1.])
+
+one could find out and reform the dimension of an array and so turn it into a matrix(2-dim array), or any number of other dimension (n-dim):
+
+In [35]: v.shape
+Out[35]: (8,)
+
+In [36]: v.shape = [2,4]
+
+In [37]: v
+Out[37]: 
+array([[1, 2, 3, 4],
+       [4, 4, 2, 1]])
+
+In [38]: v = v.flatten()
+
+In [39]: v
+Out[39]: array([1, 2, 3, 4, 4, 4, 2, 1])
+
+In [40]: v.shape = [4,2]
+
+In [41]: v
+Out[41]: 
+array([[1, 2],
+       [3, 4],
+       [4, 4],
+       [2, 1]])
+
+print 2 in v
+print 10 in v
+
+In [5]: v = [1,2,3,4]
+
+In [6]: v = np.array(v)
+
+In [7]: v
+Out[7]: array([1, 2, 3, 4])
+
+In [8]: v + v
+Out[8]: array([2, 4, 6, 8])
+
+In [9]: v[v>2]
+Out[9]: array([3, 4])
+
+
