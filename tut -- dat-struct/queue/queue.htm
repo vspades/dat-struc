@@ -1,0 +1,39 @@
+<pre>
+queue
+	.literally means standing in line awaiting for their turns.
+	.ex. queue of jobs awaiting to earn some resources (CPU Cycles, RAM Blocks,
+	...)
+	.the order of add/remove elements would described as FIFO (First In First
+	Out).
+	.the order of add/remove items in pq (priority queue) is the default FIFO.
+		.add: same as simple queue
+		.remove: qremove() removes the item with the highest priority.
+	.examples for pq:
+		.apq (ascending priority queue): minimum element wold be removed first.
+		.dpq (descending priority queue): maximum element wold be removed first.
+		.tpq (time-stamp priority queue): that one element which arrived earlier,
+		(element with the minimum time-stamp), would be removed first.
+application
+	.apq and dpq could be used in DBMS design.
+	L
+	 -------- min(l1): m1
+	 -------- min(l2): m2
+	 -------- min(l3): m3 -- _min_ = m3 (qremove would remove m3 from l3)
+	 ----     min(l4): m4
+	we don't need to sort or merge them sub-vectors as they already reside on
+	disk, and then again we could always keep the most recent result in a tiny
+	text file, so the future requests would be compared with that _min_.
+problem
+	it'll face -sparse array problem, while items gradually being removed from
+	vector. in the pq, when only small number f items left, we got a large empty
+	array contains only a few number of elements. this would not be memory
+	efficient.
+	to overcome such an issue another form of queue, named as -circular queue-
+	has been introduced. in that case, for adding a new element,we don't need
+	traverse the array all from the beginning to locate an empty slot.
+	however such a problem could get ignored , due to the applications of the
+	-queue data-structure.
+		.OS: nowadays OS already got enough memory (1GB and above)
+		.DB: they already got enough resource from disk and memory. also we
+		are able to chunk them into partitions (ex explained earlier) and
+		process them separately.
